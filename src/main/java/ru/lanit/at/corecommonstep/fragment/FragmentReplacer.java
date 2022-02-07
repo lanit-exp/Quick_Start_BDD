@@ -11,7 +11,6 @@ import io.cucumber.core.gherkin.Step;
 import io.cucumber.gherkin.GherkinDialect;
 import io.cucumber.gherkin.GherkinDialectProvider;
 import io.cucumber.gherkin.IGherkinDialectProvider;
-import io.cucumber.messages.Messages;
 import io.cucumber.plugin.event.DataTableArgument;
 import io.cucumber.plugin.event.DocStringArgument;
 import io.cucumber.plugin.event.Location;
@@ -308,7 +307,7 @@ public class FragmentReplacer {
                         argumentType,
                         dialect,
                         fragmentStep.getPreviousGivenWhenThenKeyword(),
-                        Messages.Location.newBuilder().setLine(location.getLine()).setColumn(location.getColumn()).build(),
+                        new Location(location.getLine(), location.getColumn()),
                         fragmentStep.getKeyword());
                 replacementSteps.add(replaceStep);
             }

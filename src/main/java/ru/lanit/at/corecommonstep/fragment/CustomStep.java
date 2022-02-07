@@ -4,7 +4,6 @@ import io.cucumber.core.gherkin.Argument;
 import io.cucumber.core.gherkin.Step;
 import io.cucumber.core.gherkin.StepType;
 import io.cucumber.gherkin.GherkinDialect;
-import io.cucumber.messages.Messages;
 import io.cucumber.plugin.event.DataTableArgument;
 import io.cucumber.plugin.event.DocStringArgument;
 import io.cucumber.plugin.event.Location;
@@ -18,7 +17,7 @@ public class CustomStep implements Step {
     private final String keyWord;
     private final StepType stepType;
     private final String previousGwtKeyWord;
-    private final Messages.Location location;
+    private final Location location;
     private final String id;
     private final String text;
 
@@ -29,7 +28,7 @@ public class CustomStep implements Step {
             Class argumentType,
             GherkinDialect dialect,
             String previousGwtKeyWord,
-            Messages.Location location,
+            Location location,
             String keyword
     ) {
         this.id = id;
@@ -41,7 +40,7 @@ public class CustomStep implements Step {
         this.location = location;
     }
 
-    private static Argument extractArgument(List<List<String>> argument, Class argumentType, Messages.Location location) {
+    private static Argument extractArgument(List<List<String>> argument, Class argumentType, Location location) {
         if (!argument.isEmpty()) {
             if (DataTableArgument.class.equals(argumentType)) {
                 return new CustomGherkinMessagesDataTableArgument(argument, location.getLine() + 1);
