@@ -6,7 +6,7 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         plugin = {
                 "pretty",
-                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+                "io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm"
         },
         features = "classpath:features",
         glue = {"ru.lanit.at.steps", "ru.lanit.at.hooks"}
