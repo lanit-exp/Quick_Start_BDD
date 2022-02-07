@@ -6,7 +6,7 @@
 
     <groupId>ru.lanit.at</groupId>
     <artifactId>autotest-template-with-cucumber</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source>8</java.source>
@@ -14,6 +14,7 @@
         <owner.version>1.0.12</owner.version>
         <cucumber.version>7.2.3</cucumber.version>
         <aspectj.version>1.9.6</aspectj.version>
+        <aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
         <surefire.version>2.22.2</surefire.version>
         <selenide.version>6.2.0</selenide.version>
         <log4j.version>2.15.0</log4j.version>
@@ -77,6 +78,43 @@
                     <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>${aspectj-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <source>${java.source}</source>
+                    <target>${java.source}</target>
+                    <complianceLevel>${java.source}</complianceLevel>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <weaveDependencies>
+                        <weaveDependency>
+                            <groupId>io.cucumber</groupId>
+                            <artifactId>cucumber-testng</artifactId>
+                        </weaveDependency>
+                        <weaveDependency>
+                            <groupId>io.cucumber</groupId>
+                            <artifactId>cucumber-core</artifactId>
+                        </weaveDependency>
+                    </weaveDependencies>
+                    <XnoInline>true</XnoInline>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -98,7 +136,6 @@
             <artifactId>cucumber-picocontainer</artifactId>
             <version>${cucumber.version}</version>
         </dependency>
-        <!--cucumber-->
 
         <!--allure-->
         <dependency>
@@ -175,11 +212,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
-        <!--rest-assured-->
-
-
-
     </dependencies>
 
 </project>
