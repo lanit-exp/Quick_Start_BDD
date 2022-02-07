@@ -14,6 +14,7 @@
         <owner.version>1.0.12</owner.version>
         <cucumber.version>6.9.1</cucumber.version>
         <aspectj.version>1.9.6</aspectj.version>
+        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
         <surefire.version>2.22.2</surefire.version>
         <selenide.version>6.2.0</selenide.version>
         <log4j.version>2.15.0</log4j.version>
@@ -77,6 +78,43 @@
                     <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>${aspectj-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <source>${java.source}</source>
+                    <target>${java.source}</target>
+                    <complianceLevel>${java.source}</complianceLevel>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <weaveDependencies>
+                        <weaveDependency>
+                            <groupId>io.cucumber</groupId>
+                            <artifactId>cucumber-testng</artifactId>
+                        </weaveDependency>
+                        <weaveDependency>
+                            <groupId>io.cucumber</groupId>
+                            <artifactId>cucumber-core</artifactId>
+                        </weaveDependency>
+                    </weaveDependencies>
+                    <XnoInline>true</XnoInline>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -86,7 +124,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version> 6.9.1</version>
+            <version>${cucumber.version}</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -106,10 +144,15 @@
         <!--cucumber-->
 
         <!--allure-->
+<!--        <dependency>-->
+<!--            <groupId>io.qameta.allure</groupId>-->
+<!--            <artifactId>allure-cucumber7-jvm</artifactId>-->
+<!--            <version>2.17.2</version>-->
+<!--        </dependency> -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-cucumber7-jvm</artifactId>
-            <version>2.17.2</version>
+            <artifactId>allure-cucumber6-jvm</artifactId>
+            <version>2.13.6</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -181,10 +224,10 @@
             <version>${jackson.version}</version>
         </dependency>
 
-        <!--rest-assured-->
-
 
 
     </dependencies>
+
+
 
 </project>
