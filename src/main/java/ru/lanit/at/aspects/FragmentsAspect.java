@@ -16,22 +16,6 @@ import java.util.stream.Collectors;
 @Aspect
 public class FragmentsAspect {
 
-    @Pointcut("execution(* io.cucumber.core.runtime.FeaturePathFeatureSupplier.get(..))")
-    public void cucumberFeatures() {
-    }
-
-    /**
-     * тут используется строгий assert
-     *
-     * @param joinPoint
-     * @return
-     * @throws Throwable
-     */
-    @Around("cucumberFeatures()")
-    public Object replaceSteps(ProceedingJoinPoint joinPoint) throws Throwable {
-        return replaceSteps((List<Feature>) joinPoint.proceed(), new Assertion());
-    }
-
     /**
      * замена фрагментов и данных в фиче
      *
@@ -50,5 +34,21 @@ public class FragmentsAspect {
         fragmentReplacer.replace();
         features = new GherkinSerializer().reserializeFeatures(features, assertion);
         return features;
+    }
+
+    @Pointcut("execution(* io.cucumber.core.runtime.FeaturePathFeatureSupplier.get(..))")
+    public void cucumberFeatures() {
+    }
+
+    /**
+     * тут используется строгий assert
+     *
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
+    @Around("cucumberFeatures()")
+    public Object replaceSteps(ProceedingJoinPoint joinPoint) throws Throwable {
+        return replaceSteps((List<Feature>) joinPoint.proceed(), new Assertion());
     }
 }

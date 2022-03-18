@@ -1,6 +1,7 @@
 package ru.lanit.at.utils.allure;
 
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.lanit.at.utils.Sleep;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -77,6 +79,10 @@ public class AllureHelper {
 
     public static void stopAllureStep(String uuid) {
         get().stopStep(uuid);
+    }
+
+    public static void attachSelenoidVideo(String name, InputStream is) {
+        Allure.getLifecycle().addAttachment(name, "video/mp4", "mp4", is);
     }
 
 

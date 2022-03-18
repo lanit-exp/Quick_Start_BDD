@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 public class GherkinSerializer {
 
+    public static final String DATA_TAG = "@data=$";
     private static final String NL = "\n";
     private static final String SPACE = " ";
-    public static final String DATA_TAG = "@data=$";
     private StringBuilder builder;
     private Assertion assertion;
 

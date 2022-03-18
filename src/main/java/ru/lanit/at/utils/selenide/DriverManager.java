@@ -1,6 +1,7 @@
 package ru.lanit.at.utils.selenide;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.FileDownloadMode;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -13,6 +14,8 @@ import ru.lanit.at.utils.web.pagecontext.Environment;
 import ru.lanit.at.utils.web.properties.Configurations;
 import ru.lanit.at.utils.web.properties.WebConfigurations;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -26,6 +29,11 @@ public class DriverManager {
 
 
     private static void createDriver() {
+        Configurations cf = ConfigFactory.create(Configurations.class
+                , System.getProperties(),
+                System.getenv());
+
+
         WebConfigurations cfg = ConfigFactory.create(WebConfigurations.class
                 , System.getProperties(),
                 System.getenv());
@@ -35,19 +43,29 @@ public class DriverManager {
                 .savePageSource(true)
         );
 
-
-        switch (cfg.webDriverBrowserName()) {
-            case "chrome":
-                WebDriverManager.chromedriver().setup();
-                break;
-            case "firefox":
-                WebDriverManager.firefoxdriver().setup();
-                break;
-            case "edge":
-                WebDriverManager.edgedriver().setup();
-                break;
-            default: {
-                throw new IllegalArgumentException(String.format(ErrorMessage.BROWSER_NOT_SUPPORTED, cfg.webDriverBrowserName()));
+        if (!cf.getRemoteURL().isEmpty()) {
+            Configuration.remote = "http://" + cf.getRemoteURL() + "/wd/hub";
+            Map<String, Boolean> options = new HashMap<>();
+            options.put("enableVNC", cf.getEnableVNC());
+            options.put("enableVideo", cf.getEnableVideo());
+            options.put("enableLog", cf.getEnableLog());
+            Configuration.browserCapabilities.setCapability("selenoid:options", options);
+            Configuration.browserCapabilities.setCapability("sessionTimeout", "30m");
+            Configuration.fileDownload = FileDownloadMode.FOLDER;
+        } else {
+            switch (cfg.webDriverBrowserName()) {
+                case "chrome":
+                    WebDriverManager.chromedriver().setup();
+                    break;
+                case "firefox":
+                    WebDriverManager.firefoxdriver().setup();
+                    break;
+                case "edge":
+                    WebDriverManager.edgedriver().setup();
+                    break;
+                default: {
+                    throw new IllegalArgumentException(String.format(ErrorMessage.BROWSER_NOT_SUPPORTED, cfg.webDriverBrowserName()));
+                }
             }
         }
 

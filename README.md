@@ -139,6 +139,12 @@ configuration.properties
 stand= названия стенда для тестирования  в классе (ru.lanit.at.utils.Stand) содержатся адреса стендов
 screen_after_step=false - необходимость прикреплять скриншот к каждому шагу
 baseUrl=https://petstore.swagger.io/v2/ - базовый url для апи запросов
+
+remoteUrl=127.0.0.1:4444 - адрес удаленного хаба/selenoid. 
+enableVNC=true - возможность отображения работы теста в браузере, переменная применима только selenoid. 
+enableVideo=true - возможность записывать видео, переменная применима только selenoid.
+enableLog=true - флаг для сохранения логов selenoid контейнера, переменная применима только selenoid.
+
 ```
 
 chrome.properties 

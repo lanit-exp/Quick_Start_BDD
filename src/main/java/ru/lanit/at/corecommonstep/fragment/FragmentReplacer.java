@@ -22,7 +22,14 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -53,6 +60,27 @@ public class FragmentReplacer {
         this.scenarioLanguageMap = cacheScenarioLanguage(this.features);
         Map<String, Pickle> fragmentsMap = cacheFragmentsAsMap(this.features);
         this.fragmentsGraph = cacheFragmentsAsGraph(this.features, fragmentsMap, this.scenarioLanguageMap);
+    }
+
+    public static Boolean getMatch(String sentence, String regex) {
+        if (sentence != null && regex != null) {
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(sentence);
+            return matcher.find();
+        }
+        return null;
+    }
+
+    public static String getMatchValueByGroupNumber(String sentence, String regex, int groupNumber) {
+        if (sentence != null && regex != null) {
+            sentence = sentence.trim();
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(sentence);
+            if (matcher.find()) {
+                return matcher.group(groupNumber);
+            }
+        }
+        return null;
     }
 
     public void replace() throws IllegalAccessException {
@@ -365,26 +393,5 @@ public class FragmentReplacer {
         }
 
         return pathBuilder;
-    }
-
-    public static Boolean getMatch(String sentence, String regex) {
-        if (sentence != null && regex != null) {
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(sentence);
-            return matcher.find();
-        }
-        return null;
-    }
-
-    public static String getMatchValueByGroupNumber(String sentence, String regex, int groupNumber) {
-        if (sentence != null && regex != null) {
-            sentence = sentence.trim();
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(sentence);
-            if (matcher.find()) {
-                return matcher.group(groupNumber);
-            }
-        }
-        return null;
     }
 }
