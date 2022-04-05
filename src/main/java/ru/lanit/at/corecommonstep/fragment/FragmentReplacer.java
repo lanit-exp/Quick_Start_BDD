@@ -44,6 +44,7 @@ public class FragmentReplacer {
     public static final String LANGUAGE_IS_NOT_SAME = "Язык фрагмента не совпадает с языком сценария! Сценарий: '%s', Фрагмент: '%s'";
 
     public static final String REGEX_FRAGMENT = "^вызвать фрагмент \"(.+)\"$";
+    public static final String REGEX_FRAGMENT_SPOILER = "^ФРАГМЕНТ \"(.+)\"$";
     public static final String FEATURE_SUFFIX = ".feature";
     public static final String FRAGMENT_TAG = "@fragment";
     private static final String REGEX_VALUE = "<%s>";
@@ -205,6 +206,9 @@ public class FragmentReplacer {
         List<Step> steps = scenario.getSteps();
 
         for (Step step : steps) {
+            if (getMatch(step.getText(), REGEX_FRAGMENT_SPOILER)) {
+                assertion.fail(String.format("Для использования фрагментов используйте другой шаг: %s\n Путь к фича-файлу: %s", REGEX_FRAGMENT, scenario.getUri().getPath()));
+            }
             String fragmentName = getFragmentName(step);
             if (fragmentName != null) {
                 String fragmentNameFromMap = fragmentsMap.keySet().stream()
@@ -252,12 +256,36 @@ public class FragmentReplacer {
         for (Step step : scenario.getSteps()) {
             String fragmentName = getFragmentName(step);
             if (fragmentName != null && !fragmentName.isEmpty() && fragmentName.equalsIgnoreCase(fragment.getName())) {
+                Step mockStep = getMockStep(step, fragment);
+                replacementSteps.add(mockStep);
                 replacementSteps.addAll(replaceSteps(step, fragment.getSteps(), fragment.getLanguage(), scenario));
+                replacementSteps.add(mockStep);
             } else {
                 replacementSteps.add(step);
             }
         }
         FieldUtils.writeField(scenario, "steps", replacementSteps, true);
+    }
+
+    /**
+     * Генерирует шаг-заглушки, который в аллюр отчете подменяется на спойлер
+     * @param step  -   шаг "вызвать фрагмент"
+     * @param fragment  -   сценарий-фрагмент
+     * @return  -   шаг ФРАГМЕНТ "название фрагмента"
+     */
+    private Step getMockStep(Step step, Pickle fragment) {
+        IGherkinDialectProvider dialectProvider = new GherkinDialectProvider();
+        GherkinDialect dialect = dialectProvider.getDialect(fragment.getLanguage(), null);
+        Location location = step.getLocation();
+        return new CustomStep(
+                step.getId(),
+                String.format("ФРАГМЕНТ \"%s\"", fragment.getName()),
+                new ArrayList<>(),
+                Object.class,
+                dialect,
+                step.getPreviousGivenWhenThenKeyword(),
+                new Location(location.getLine(), location.getColumn()),
+                step.getKeyword());
     }
 
     private String getFragmentName(Step step) {
