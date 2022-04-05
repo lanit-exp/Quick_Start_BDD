@@ -9,7 +9,7 @@ import org.testng.annotations.DataProvider;
                 "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         },
         features = "classpath:features",
-        glue = {"ru.lanit.at.steps", "ru.lanit.at.hooks"}
+        glue = {"ru.lanit.at.steps", "ru.lanit.at.hooks", "ru.lanit.at.corecommonstep"}
 )
 public class Runner extends AbstractTestNGCucumberTests {
 
